@@ -1,0 +1,113 @@
+body {
+    background-color: #0b0c10;
+    display: flex;
+    justify-content: flex-start; 
+    height: 100vh;
+    color: #ffffff;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 16px;
+    background: linear-gradient(45deg, black, blue);
+
+
+}
+
+.chat-container {
+    background-color: #1f2833;
+    border: 3px solid #45a29e; 
+    border-radius: 8px;
+    width: 1600px;
+    display: flex;
+    margin-top: 10px;
+    margin-left: auto; 
+}
+
+.chat-box {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    border-right: 2px solid #45a29e;
+    height: 100%;
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 12px;
+    max-width: 75%;
+    cursor: pointer;
+}
+
+.user-message {
+    
+    background-color: #00ffee;
+    align-self: flex-end;
+}
+
+.response-message {
+    background-color: #c5c6c7;
+    align-self: flex-start;
+}
+.welcome{
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.welcome h1{
+    font-size: 50px;
+}
+.inputGroups {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-top: 6px;
+}
+
+.inputGroups h1 {
+    display: flex; 
+    align-items: center; 
+    margin-right: 10px; 
+    font-size: 30px;
+}
+.inputGroups h1 img{
+    width: 30px;
+    height: 30px;
+}
+
+.input-group {
+    display: flex; 
+    flex-direction: column; 
+}
+
+.input-container {
+    display: flex; 
+    gap: 10px; 
+}
+
+#code-input,
+#help-input {
+    flex: 1; 
+    min-width: 300px; 
+    height: 700px;
+}
+
+#send-btn {
+   
+    margin-top: 10px;
+}
+
+.error-message {
+    color: red;
+    font-style: italic;
+}
+
+.selected-message {
+    border: 2px solid #45a29e;
+}
+
+.focus-box {
+    flex: 0 0 300px;
+    padding: 10px;
+    overflow-y: auto;
+    height: 600px;
+    background-color: #1f2833;
+}
