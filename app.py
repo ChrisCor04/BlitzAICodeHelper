@@ -1,18 +1,16 @@
 import os
 import time
 from flask import Flask, render_template, request, jsonify
-import openai
+from openai import OpenAI
 from dotenv import load_dotenv
-from flask_cors import CORS
 
 # Load environment variables from .env file
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
 
 # Initialize OpenAI client with the API key from environment variable
-openai.api_key = os.getenv('OPENAI_API_KEY')
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 @app.route('/')
 def index():
@@ -28,8 +26,8 @@ def api():
         return jsonify({"error": "No message provided"}), 400
 
     try:
-        # Send the message to OpenAI API
-        completion = openai.ChatCompletion.create(
+        # Send the message to OpenAI API using your client syntax
+        completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
@@ -37,8 +35,8 @@ def api():
             ]
         )
 
-        # Extract the assistant's response
-        assistant_response = completion.choices[0].message['content']
+        # Extract the assistant's response using dot notation
+        assistant_response = completion.choices[0].message.content
 
         return jsonify({"response": assistant_response}), 200
 
