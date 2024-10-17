@@ -1,16 +1,20 @@
 import os
+import openai
+
 import time
 from flask import Flask, render_template, request, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
-
+from flask_cors import CORS
 # Load environment variables from .env file
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
+
 
 # Initialize OpenAI client with the API key from environment variable
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 @app.route('/')
 def index():
