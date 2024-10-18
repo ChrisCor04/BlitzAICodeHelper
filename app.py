@@ -35,7 +35,7 @@ def api():
             ]
         )
 
-        # Extract the assistant's response using dot notation
+        # Extract the ai response using dot notation
         assistant_response = completion.choices[0].message.content
 
         return jsonify({"response": assistant_response}), 200
@@ -43,11 +43,11 @@ def api():
     except Exception as e:
         error_message = str(e)
 
-        # Check for quota limit errors and stop retries
+        # Check if quote limit has been reached
         if "insufficient_quota" in error_message:
             return jsonify({"error": "Insufficient quota. Please check your API plan."}), 429
 
-        # Optional: Add a delay before retrying
+        #Add a delay before retrying to prevent reaching quota
         time.sleep(1)
 
         print(f"Error: {e}")  # Print the error message to the console
