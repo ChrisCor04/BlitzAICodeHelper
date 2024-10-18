@@ -35,79 +35,93 @@
     <div id="error-message" class="error-message"></div>
 
     <script>
-        const sendBtn = document.getElementById('send-btn');
-        const errorMessageDiv = document.getElementById('error-message');
+    // Get element ID of button and error message
+    const sendBtn = document.getElementById('send-btn');
+    const errorMessageDiv = document.getElementById('error-message');
 
-        sendBtn.addEventListener('click', function () {
-            const codeInput = document.getElementById('code-input');
-            const helpInput = document.getElementById('help-input');
-            const code = codeInput.value;
-            const helpMessage = helpInput.value;
+    // Add an event listener to the send button for click events
+    sendBtn.addEventListener('click', function () {
+      
+        // Get the values from the input fields for the code and help messages
+        const codeInput = document.getElementById('code-input');
+        const helpInput = document.getElementById('help-input');
+        const code = codeInput.value;
+        const helpMessage = helpInput.value;
 
-            const combinedMessage = `${code} ${helpMessage}`.trim();
+        // Combine the messages into one message
+        const combinedMessage = `${code} ${helpMessage}`.trim();
 
-            if (combinedMessage !== '') {
-                errorMessageDiv.textContent = '';
-                sendBtn.disabled = true;
+        // Make sure the combines mesage isn't empty
+        if (combinedMessage !== '') {
+            errorMessageDiv.textContent = ''; // Clear any previous error messages
+            sendBtn.disabled = true; // Disable the send button to prevent multiple clicks
 
-                displayMessage(combinedMessage, 'user-message');
+            displayMessage(combinedMessage, 'user-message'); // Display the user's message
 
-                fetch('/api', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ message: combinedMessage })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        if (response.status === 429) {
-                            throw new Error('Rate limit exceeded. Please try again later.');
-                        }
-                        throw new Error('Failed to connect to the server.');
+            // Send a POST request to the API with the combined user messages
+            fetch('/api', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify({ message: combinedMessage }) /
+            }) //convert message type to JSON
+            .then(response => {
+                // Check if the response is not OK for error handling
+                if (!response.ok) {
+                    if (response.status === 429) {
+                        throw new Error('Rate limit exceeded. Please try again later.'); //Handle the rate limit error
                     }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.error) {
-                        throw new Error(data.error);
-                    }
-                    displayMessage(data.response, 'response-message');
-                })
-                .catch(error => {
-                    errorMessageDiv.textContent = error.message;
-                })
-                .finally(() => {
-                    sendBtn.disabled = false;
-                    codeInput.value = '';
-                    helpInput.value = '';
-                });
-            }
+                    throw new Error('Failed to connect to the server.'); // Handle a server connection error
+                }
+                return response.json(); // Parse the JSON response
+            })
+            .then(data => {
+                // Check for errors in the returned data
+                if (data.error) {
+                    throw new Error(data.error); // Throw error if any are present
+                }
+                displayMessage(data.response, 'response-message'); // Display the AI's response
+            })
+            .catch(error => {
+                errorMessageDiv.textContent = error.message; // Show error messure if caught
+            })
+            .finally(() => {
+                // Enable the send button again and clear the input fields
+                sendBtn.disabled = false;
+                codeInput.value = '';
+                helpInput.value = '';
+            });
+        }
+    });
+
+    // Function that displays messages in the chat box
+    function displayMessage(text, className) {
+        const chatBox = document.getElementById('chat-box');
+        const messageElement = document.createElement('div'); // Create a new message element
+        messageElement.className = `message ${className}`; 
+        messageElement.textContent = text; 
+
+        // Add an event listener to let users focus on a message
+        messageElement.addEventListener('click', function() {
+            focusMessage(text); 
         });
 
-        function displayMessage(text, className) {
-            const chatBox = document.getElementById('chat-box');
-            const messageElement = document.createElement('div');
-            messageElement.className = `message ${className}`;
-            messageElement.textContent = text;
+        chatBox.appendChild(messageElement); // Add the message to the chat box
+        chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom to see the latest message
+    }
 
-            messageElement.addEventListener('click', function() {
-                focusMessage(text);
-            });
+    // Function to focus on a message
+    function focusMessage(text) {
+        const focusedMessageDiv = document.getElementById('focused-message');
+        focusedMessageDiv.textContent = text; // Set the focused message text
+        const allMessages = document.querySelectorAll('.message');
 
-            chatBox.appendChild(messageElement);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function focusMessage(text) {
-            const focusedMessageDiv = document.getElementById('focused-message');
-            focusedMessageDiv.textContent = text;
-            const allMessages = document.querySelectorAll('.message');
-
-            allMessages.forEach(msg => msg.classList.remove('selected-message'));
-            focusedMessageDiv.classList.add('selected-message');
-        }
-    </script>
+        // Remove the selected class from all messages
+        allMessages.forEach(msg => msg.classList.remove('selected-message'));
+        focusedMessageDiv.classList.add('selected-message'); // Show the focused message
+    }
+</script>
 
 </body>
 </html>
